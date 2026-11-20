@@ -1,0 +1,1 @@
+"""tests 包：离线单元测试集合，全部用假对象（tests/fakes.py）替代 MySQL/Milvus/大模型等真实依赖，无需外部服务即可运行。"""

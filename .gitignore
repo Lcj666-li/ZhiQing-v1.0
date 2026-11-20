@@ -1,0 +1,27 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+*.egg-info/
+
+# 环境与密钥
+.env
+.env.local
+
+# 运行产物
+logs/
+
+# 模型权重与训练产物（体积大，不入库；获取方式见 README 3.2）
+models/
+
+# 本机运行手册（含个人环境路径，不入库）
+启动运行说明.txt
+
+# 测试与工具
+.pytest_cache/
+.coverage
+htmlcov/
+.idea/
+.vscode/
+.DS_Store

@@ -1,0 +1,48 @@
+version: '3.8'
+
+services:
+  zhiqing-app:
+    build: .
+    image: zhiqing-system:1.0
+    container_name: zhiqing-app
+    ports:
+      - "${APP_PORT:-8080}:8080"
+    environment:
+      # 应用监听
+      - HOST=${HOST:-0.0.0.0}
+      - PORT=${PORT:-8080}
+
+      # MySQL（会话历史 / FAQ 标准答案）
+      - MYSQL_HOST=${MYSQL_HOST:-mysql}
+      - MYSQL_PORT=${MYSQL_PORT:-3306}
+      - MYSQL_USER=${MYSQL_USER:-zhiqing}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD:-123456}
+      - MYSQL_DATABASE=${MYSQL_DATABASE:-zhiqing_kb}
+
+      # Milvus（知识库分块集合 zhiqing_kb + FAQ 问句集合 zhiqing_faq）
+      - MILVUS_HOST=${MILVUS_HOST:-milvus}
+      - MILVUS_PORT=${MILVUS_PORT:-19530}
+      - MILVUS_DATABASE_NAME=${MILVUS_DATABASE_NAME:-zhiqing}
+      - MILVUS_COLLECTION_NAME=${MILVUS_COLLECTION_NAME:-zhiqing_kb}
+      - MILVUS_FAQ_COLLECTION_NAME=${MILVUS_FAQ_COLLECTION_NAME:-zhiqing_faq}
+      - EMBEDDING_DEVICE=${EMBEDDING_DEVICE:-auto}
+      - EMBEDDING_FP16=${EMBEDDING_FP16:-auto}
+
+      # 大模型（OpenAI 兼容协议）：密钥只用环境变量注入，绝不写进代码库
+      - DASHSCOPE_API_KEY=${DASHSCOPE_API_KEY:-}
+      - LLM_MODEL=${LLM_MODEL:-qwen-plus}
+      - DASHSCOPE_BASE_URL=${DASHSCOPE_BASE_URL:-https://dashscope.aliyuncs.com/compatible-mode/v1}
+
+      # JWT 鉴权（生产务必覆盖默认口令与密钥）
+      - AUTH_USERNAME=${AUTH_USERNAME:-admin}
+      - AUTH_PASSWORD=${AUTH_PASSWORD:-zhiqing@2026}
+      - JWT_SECRET=${JWT_SECRET:-zhiqing-dev-secret-change-in-prod}
+
+      # 说明：分块大小/检索阈值/知识域列表/客服电话等由 config.ini 提供（随镜像 COPY），
+      #       settings 对这些项只读 ini，故不在此处用环境变量重复声明。
+
+    volumes:
+      - ./logs:/app/logs
+      # 模型不入库也不打进镜像，宿主机下载后挂载（见 README 3.2）
+      - ./models:/app/models
+    restart: unless-stopped

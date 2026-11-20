@@ -1,0 +1,1 @@
+"""RAG 核心包：离线入库（loaders 加载 -> splitters 单层分块 -> ingest 组装）与在线问答管道（pipeline：意图识别 -> 知识域路由 -> 向量检索 -> 流式生成）。"""

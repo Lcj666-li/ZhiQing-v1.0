@@ -1,0 +1,51 @@
+# 知擎 v1.0 依赖清单
+# 只列“直接依赖”（项目代码真正 import 的包），传递依赖由 pip 自动解析。
+# 技术栈：FastAPI + WebSocket + LangChain + Milvus + MySQL + bge-m3。
+# 版本 pinned 到开发验证通过的环境，保证可复现。
+
+# --- Web / API / 鉴权 ---
+fastapi==0.115.12
+uvicorn==0.54.0
+pydantic==2.14.1
+PyJWT==2.15.1
+python-dotenv==1.2.4
+
+# --- 大模型（OpenAI 兼容协议，一套代码通吃 DashScope/DeepSeek/...）---
+openai==2.54.0
+langchain-openai==1.1.10
+
+# --- LangChain（文档加载 / 分块 / 提示词模板）---
+langchain-core==1.2.16
+langchain-community==0.4.1
+langchain-text-splitters==1.1.1
+
+# --- 向量库 + bge-m3 嵌入 ---
+pymilvus==2.5.4
+milvus-model==0.2.5
+# milvus_model.hybrid.BGEM3EmbeddingFunction 底层用 FlagEmbedding 加载 bge-m3，
+# 它会传递引入 sentence_transformers / peft / accelerate 等（非本项目直接调用）。
+FlagEmbedding==1.3.5
+numpy==2.2.6
+# GPU 构建来自 PyTorch cu126 索引：
+#   pip install torch==2.14.1 --index-url https://download.pytorch.org/whl/cu126
+torch==2.14.1
+transformers==4.45.0
+sentencepiece==0.2.0
+
+# --- 关系存储（会话历史 / FAQ 标准答案）---
+PyMySQL==1.1.1
+
+# --- 文档解析（PDF / DOCX）---
+PyMuPDF==1.23.16
+python-docx==1.1.2
+
+# --- 意图分类器（TF-IDF + 逻辑回归，离线训练 / 在线毫秒级推理）---
+scikit-learn==1.7.2
+joblib==1.6.0
+
+# --- 离线评测（RAGAS，会传递引入 langchain / tiktoken / pandas 等）---
+ragas==0.2.6
+datasets==3.3.1
+
+# --- 测试 ---
+pytest==9.2.0
